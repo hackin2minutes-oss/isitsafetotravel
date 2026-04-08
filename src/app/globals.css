@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   120Hz / ProMotion-Optimized Design System
+   All animations use GPU-composited properties ONLY:
+   transform, opacity — never width, height, top, left
+   ============================================================ */
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 226, 232, 240;
+
+  /* Buttery spring timing functions */
+  --ease-spring:       cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out-expo:     cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-smooth:       cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* Duration scale tuned for 120Hz (multiples of 8.33ms) */
+  --dur-instant:    80ms;
+  --dur-fast:      160ms;
+  --dur-normal:    280ms;
+  --dur-slow:      420ms;
+  --dur-cinematic: 700ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 248, 250, 252;
+    --background-start-rgb: 2, 6, 23;
+    --background-end-rgb: 15, 23, 42;
+  }
+}
+
+/* ======================
+   BASE LAYER
+   ====================== */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  will-change: scroll-position;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ======================
+   INTERACTIVE ELEMENTS
+   GPU-composited only: transform + opacity
+   ====================== */
+button, a, [role="button"] {
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    opacity var(--dur-fast) var(--ease-out-expo),
+    box-shadow var(--dur-fast) var(--ease-smooth),
+    background-color var(--dur-fast) linear;
+  cursor: pointer;
+}
+
+button:active, [role="button"]:active {
+  transform: scale(0.97);
+  transition-duration: var(--dur-instant);
+}
+
+@media (hover: none) {
+  button:active, [role="button"]:active {
+    transform: scale(0.95);
+  }
+}
+
+/* ======================
+   GLASS MORPHISM SYSTEM
+   ====================== */
+.glass-card {
+  @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-glass;
+  will-change: transform, box-shadow;
+  transition:
+    transform var(--dur-normal) var(--ease-smooth),
+    box-shadow var(--dur-normal) var(--ease-smooth);
+}
+
+.dark .glass-card {
+  @apply bg-slate-900/40 backdrop-blur-lg border border-white/5 shadow-glass;
+}
+
+.glass-panel {
+  @apply backdrop-blur-xl border border-white/10;
+}
+
+/* ======================
+   120Hz KEYFRAME LIBRARY
+   GPU-only: transform + opacity
+   ====================== */
+
+@keyframes fadeUpIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes springIn {
+  0%   { opacity: 0; transform: translateY(20px) scale(0.96); }
+  60%  { opacity: 1; transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes radarPing {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes staggerIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ======================
+   ANIMATION CLASSES
+   ====================== */
+.animate-safe-fade-in {
+  animation: fadeUpIn var(--dur-normal) var(--ease-out-expo) both;
+}
+
+.animate-spring-in {
+  animation: springIn var(--dur-slow) var(--ease-spring) both;
+}
+
+.animate-slide-left {
+  animation: slideInLeft var(--dur-normal) var(--ease-out-expo) both;
+}
+
+.animate-radar-ping {
+  animation: radarPing 1.4s var(--ease-out-expo) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-float {
+  animation: float 5s var(--ease-in-out-quart) infinite;
+}
+
+/* Staggered entry — GPU-composited spring cascade */
+.stagger-children > *:nth-child(1) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 0ms   both; }
+.stagger-children > *:nth-child(2) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 60ms  both; }
+.stagger-children > *:nth-child(3) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 120ms both; }
+.stagger-children > *:nth-child(4) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 180ms both; }
+.stagger-children > *:nth-child(5) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 240ms both; }
+.stagger-children > *:nth-child(6) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 300ms both; }
+.stagger-children > *:nth-child(7) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 360ms both; }
+.stagger-children > *:nth-child(8) { animation: staggerIn var(--dur-normal) var(--ease-out-expo) 420ms both; }
+
+/* ======================
+   HOVER LIFT SYSTEM
+   ====================== */
+.hover-lift {
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-smooth);
+  will-change: transform;
+}
+.hover-lift:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 20px 40px -8px rgba(0,0,0,0.18);
+}
+
+.safe-hover-card {
+  @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-premium;
+  will-change: transform;
+}
+
+/* ======================
+   SCORE GRADIENTS
+   ====================== */
+.score-gradient-safe {
+  @apply bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_0_20px_rgba(16,185,129,0.3)];
+}
+.score-gradient-warning {
+  @apply bg-gradient-to-br from-amber-400 to-amber-600 shadow-[0_0_20px_rgba(245,158,11,0.3)];
+}
+.score-gradient-danger {
+  @apply bg-gradient-to-br from-rose-400 to-rose-600 shadow-[0_0_20px_rgba(244,63,94,0.3)];
+}
+
+/* ======================
+   CUSTOM SCROLLBAR
+   ====================== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 99px;
+  transition: background var(--dur-fast) linear;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.45); }
+
+/* ======================
+   LEAFLET OVERRIDES
+   ====================== */
+.leaflet-container {
+  border-radius: 1.5rem;
+  font-family: 'Inter', sans-serif !important;
+  background: #0f172a !important;
+}
+.leaflet-control-zoom {
+  border: none !important;
+  @apply shadow-premium !important;
+}
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  @apply bg-white dark:bg-slate-900 text-slate-800 dark:text-white border-0 !important;
+  transition: transform var(--dur-fast) var(--ease-spring), background-color var(--dur-fast) linear !important;
+}
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+  transform: scale(1.08) !important;
+}
+
+.premium-marker-shadow {
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.25);
+}
+
+/* ======================
+   REDUCE MOTION — A11y FALLBACK
+   ====================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
