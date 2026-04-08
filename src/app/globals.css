@@ -268,6 +268,32 @@ button:active, [role="button"]:active {
 }
 
 /* ======================
+   MOBILE-FIRST RESPONSIVE LAYOUT TOKENS
+   ====================== */
+.layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout--mobile {
+  padding: 0;
+}
+
+.layout--tablet {
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .layout--desktop {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+  }
+}
+
+/* ======================
    REDUCE MOTION — A11y FALLBACK
    ====================== */
 @media (prefers-reduced-motion: reduce) {

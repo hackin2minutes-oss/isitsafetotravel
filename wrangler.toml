@@ -1,5 +1,5 @@
 name = "isitsafetotravel"
+account_id = "cc550ad7cbc3497604af4e34ed34634e"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
-
 pages_build_output_dir = ".vercel/output/static"

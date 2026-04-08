@@ -2,6 +2,8 @@
 const nextConfig = {
   // Required for @cloudflare/next-on-pages
   experimental: {},
+  compress: true,
+  poweredByHeader: false,
   images: {
     unoptimized: true,
   },

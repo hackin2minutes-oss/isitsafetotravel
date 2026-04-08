@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SafetyAssessment, Location, DimensionData } from '@/types';
 import { 
   Shield, AlertTriangle, CheckCircle, Info, 
@@ -21,6 +21,16 @@ interface SafetyCardProps {
 
 export function SafetyCard({ location, assessment, isLoading, retryCount = 0, error }: SafetyCardProps) {
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Bug Fix: Reset scroll position when country/location changes
+  useEffect(() => {
+    if (location?.id || location?.coordinates) {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = 0;
+      }
+    }
+  }, [location?.id, location?.coordinates]);
 
   // 1. LOADING STATE
   if (isLoading) {
@@ -83,7 +93,7 @@ export function SafetyCard({ location, assessment, isLoading, retryCount = 0, er
   const isDesktop = viewMode === 'desktop';
 
   return (
-    <div className={`flex flex-col gap-6 animate-spring-in ${isDesktop ? 'w-full' : 'max-w-md mx-auto w-full'}`}>
+    <div ref={containerRef} className={`flex flex-col gap-6 animate-spring-in ${isDesktop ? 'w-full' : 'max-w-md mx-auto w-full'}`}>
       
       {/* VIEW MODE TOGGLE */}
       <div className="flex items-center justify-end gap-2 mb-2" role="group" aria-label="View mode toggle">

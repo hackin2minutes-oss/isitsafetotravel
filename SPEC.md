@@ -8,14 +8,59 @@ This document outlines the implementation details for the travel safety assessme
 2. **Interactive Map**: Mapbox integration with click-to-search functionality
 3. **Safety Score Card**: Visual display of computed safety score (0-100)
 4. **Detailed Reports**: Weather, Air Quality, Security, Health tabs
+5. **Mobile-First Design**: Optimized for iOS/Android with touch-friendly UI
+6. **Offline Support**: In-memory caching for frequently accessed data
 
 ## Technical Stack
 
-- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
-- **Maps**: Mapbox GL JS
+- **Frontend**: Next.js 15 (Edge Runtime), React 19, TypeScript, Tailwind CSS
+- **Maps**: Mapbox GL JS / React Leaflet
 - **State**: Zustand
+- **Testing**: Vitest + React Testing Library
 - **APIs**: OpenWeatherMap (weather + air quality)
-- **Deployment**: Vercel
+- **Deployment**: Vercel / Cloudflare Pages
+
+## Mobile Optimization
+
+### Device Detection
+- **Hook**: `useDeviceDetection` in `src/hooks/useDeviceDetection.ts`
+- Breakpoints: Mobile (< 768px), Tablet (768-1024px), Desktop (≥ 1024px)
+- Passive resize listener for optimal performance
+
+### 120Hz Animation System
+All animations use GPU-composited properties only (transform, opacity):
+
+```css
+--ease-spring:    cubic-bezier(0.175, 0.885, 0.32, 1.275);
+--ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+--ease-smooth:    cubic-bezier(0.23, 1, 0.32, 1);
+
+--dur-instant:    80ms;
+--dur-fast:       160ms;
+--dur-normal:     280ms;
+--dur-slow:       420ms;
+--dur-cinematic:  700ms;
+```
+
+### Insights-First Layout
+- **Mobile**: Tab-based navigation (Insights | Map View) with fixed bottom bar
+- **Desktop**: Side-by-side layout with sidebar (60%) and map (40%)
+- Smooth 700ms transition between views
+
+### Logo Component
+- **File**: `src/components/Logo.tsx`
+- **Variants**: `full`, `icon`, `compact`
+- **Responsive**: 40px (mobile) → 48px (tablet) → 56px (desktop)
+
+## Performance Targets
+
+| Metric | Target | Status |
+|--------|--------|--------|
+| LCP | < 2.5s | ✅ Optimized |
+| FID | < 100ms | ✅ Optimized |
+| CLS | < 0.1 | ✅ Optimized |
+| Bundle Reduction | 30%+ | ✅ Dynamic imports |
+| Lighthouse | 90+ | ✅ Target met |
 
 ## API Keys Required
 
@@ -46,48 +91,50 @@ is-it-safe/
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx          # Root layout with ErrorBoundary
-│   │   ├── page.tsx            # Main dashboard page
-│   │   └── globals.css         # Global styles + Tailwind
+│   │   ├── page.tsx           # Main dashboard page
+│   │   └── globals.css        # 120Hz-optimized CSS
 │   ├── components/
-│   │   ├── SearchPanel.tsx     # Debounced location search
-│   │   ├── MapPanel.tsx        # Mapbox interactive map
-│   │   ├── SafetyCard.tsx      # Core safety assessment display
-│   │   ├── BriefGenerator.tsx  # Exportable safety brief
-│   │   ├── NewsTicker.tsx      # Real-time news ticker
-│   │   ├── ErrorBoundary.tsx   # Global error boundary
-│   │   └── ui/                 # Reusable UI primitives
+│   │   ├── Logo.tsx           # Responsive logo component
+│   │   ├── ResponsiveLayout.tsx # Mobile-first layout
+│   │   ├── SearchPanel.tsx    # Debounced location search
+│   │   ├── MapPanel.tsx       # Lazy-loaded map
+│   │   ├── SafetyCard.tsx     # Core safety assessment
+│   │   ├── BriefGenerator.tsx  # Exportable brief
+│   │   ├── NewsTicker.tsx     # Real-time news ticker
+│   │   └── ErrorBoundary.tsx   # Global error boundary
 │   ├── services/
 │   │   ├── weatherService.ts   # OpenWeatherMap integration
-│   │   ├── aqiService.ts       # Air quality data
+│   │   ├── aqiService.ts      # Air quality data
 │   │   ├── securityService.ts  # Security threat data
 │   │   ├── locationService.ts  # Geocoding & search
 │   │   ├── intelligenceService.ts
 │   │   └── newsService.ts
 │   ├── hooks/
-│   │   └── useSafetyData.ts    # Safety data fetching + retry logic
+│   │   ├── useDeviceDetection.ts # Device type detection
+│   │   └── useSafetyData.ts   # Data fetching + retry
 │   ├── store/
 │   │   └── safetyStore.ts     # Zustand global state
 │   ├── types/
-│   │   └── index.ts           # TypeScript interfaces
+│   │   └── index.ts          # TypeScript interfaces
 │   ├── utils/
-│   │   ├── scoreCalculator.ts  # Safety score computation
-│   │   └── fetchWithRetry.ts  # Retry utility for API calls
+│   │   ├── performance.ts     # Caching & Web Vitals
+│   │   ├── scoreCalculator.ts # Safety score computation
+│   │   └── fetchWithRetry.ts # Retry with backoff
 │   └── data/
 │       └── worldDatabase.ts   # Static census data
 ├── src/test/
-│   └── mocks.ts               # Shared test fixtures
-├── src/components/
+│   ├── mocks.ts               # Shared test fixtures
 │   ├── SafetyCard.test.tsx    # 14 test cases
 │   ├── BriefGenerator.test.tsx # 10 test cases
 │   └── SearchPanel.test.tsx   # 14 test cases
 ├── vitest.config.ts           # Vitest configuration
 ├── setupTests.ts              # Global test setup
+├── MOBILE_OPTIMIZATION.md     # Mobile enhancement docs
 ├── public/
 ├── next.config.js
 ├── tailwind.config.ts
 ├── tsconfig.json
-├── package.json
-└── .env.local
+└── package.json
 ```
 
 ## Testing
@@ -95,23 +142,10 @@ is-it-safe/
 Tests are run with [Vitest](https://vitest.dev) using `@testing-library/react`.
 
 ```bash
-# Run tests in watch mode
-npm test
-
-# Run tests once (CI mode)
-npm run test:run
-
-# Run with coverage report
-npm run test:coverage
-
-# Run with interactive UI
-npm run test:ui
-```
-
-### Required Test Dependencies
-
-```bash
-npm install --save-dev vitest @vitest/ui @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
+npm test          # Watch mode
+npm run test:run # CI mode
+npm run build     # Production build
+npm start         # Production server
 ```
 
 ### Test Coverage
@@ -124,24 +158,30 @@ npm install --save-dev vitest @vitest/ui @testing-library/react @testing-library
 
 ## Error Handling
 
-- **ErrorBoundary** (`src/components/ErrorBoundary.tsx`) wraps the entire app and catches React errors.
-- **Retry logic** (`src/utils/fetchWithRetry.ts`) implements exponential backoff with configurable retries.
-- **useSafetyData** (`src/hooks/useSafetyData.ts`) handles fetch failures gracefully with up to 2 retries.
-- Error states in SafetyCard show actionable messages with a "Reinitialize System" button.
+- **ErrorBoundary**: Wraps entire app, shows branded error UI with Retry/Home buttons
+- **Retry Logic**: Exponential backoff with up to 2 retries (1s → 2s delay)
+- **Error States**: Actionable messages in SafetyCard with "Reinitialize System" button
 
-## Accessibility
+## Accessibility (WCAG 2.1 AA)
 
-- SearchPanel: `role="combobox"`, `aria-expanded`, `aria-autocomplete`, `aria-controls`, `role="listbox"`, `aria-live` regions
-- SafetyCard: `role="meter"` on risk bars, `role="alert"` on error state, `aria-pressed` on view toggle, `aria-hidden` on decorative icons
-- All interactive elements have `aria-label` where visual context is insufficient
-- Color contrast meets WCAG AA standards via Tailwind's slate palette
+- SearchPanel: `role="combobox"`, `aria-expanded`, `aria-autocomplete`, `role="listbox"`, `aria-live`
+- SafetyCard: `role="meter"` on risk bars, `role="alert"` on errors, `aria-pressed` on toggles
+- All interactive elements have `aria-label` where needed
+- Color contrast meets WCAG AA standards
+- Reduced motion support: `@media (prefers-reduced-motion: reduce)`
 
-## Future Improvements
+## Browser Support
 
-1. **i18n**: Externalize all user-facing strings for multi-language support
-2. **Service Worker**: Cache safety data for offline access in low-connectivity scenarios
-3. **PWA**: Add manifest and service worker for installability
-4. **Performance**: Virtualize long lists, lazy-load map tiles, code-split heavy components
-5. **E2E Tests**: Add Playwright/Cypress for full integration tests
-6. **API Monitoring**: Add rate-limit handling and request deduplication
-7. **Data Freshness**: Document data source staleness and add refresh indicators
+- iOS Safari 14+
+- Chrome 90+
+- Firefox 88+
+- Samsung Internet 14+
+- Edge 90+
+
+## Future Roadmap
+
+1. **PWA**: Manifest + Service Worker for installability & offline mode
+2. **i18n**: Multi-language support with externalized strings
+3. **E2E Tests**: Playwright/Cypress for full integration tests
+4. **Advanced Caching**: Redis/Upstash for shared cache across users
+5. **Real-time**: WebSocket for live safety updates

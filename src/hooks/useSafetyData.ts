@@ -7,6 +7,7 @@ import { calculateSafetyAssessment } from '@/utils/scoreCalculator';
 import { reverseGeocode } from '@/services/locationService';
 import { fetchWithRetry } from '@/utils/fetchWithRetry';
 import { Location, SafetyAssessment, IntelData, NewsData } from '@/types';
+import { fetchWithCache } from '@/utils/performance';
 
 const MAX_RETRIES = 2;
 const RETRY_STATUSES = [408, 429, 500, 502, 503, 504];
@@ -56,16 +57,14 @@ export function useSafetyData() {
         const intelUrl = `${apiBase}/api/intel?code=${countryCode}`;
         const newsUrl = `${apiBase}/api/news?q=${encodeURIComponent(countryName)}`;
 
-        const fetchOptions = { credentials: 'same-origin' as RequestCredentials };
-
         const [weather, aqi, security, intel, news] = await Promise.all([
           getWeatherData(latitude, longitude).catch(() => null),
           getAirQualityData(latitude, longitude).catch(() => null),
           getSecurityData(countryName, countryCode).catch(() => null),
           countryCode
-            ? fetchWithRetry<IntelData>(intelUrl, fetchOptions, { maxRetries: MAX_RETRIES, retryableStatuses: RETRY_STATUSES }).catch(() => null)
+            ? fetchWithCache<IntelData>(intelUrl).catch(() => null)
             : Promise.resolve(null),
-          fetchWithRetry<NewsData>(newsUrl, fetchOptions, { maxRetries: MAX_RETRIES, retryableStatuses: RETRY_STATUSES }).catch(() => null),
+          fetchWithCache<NewsData>(newsUrl).catch(() => null),
         ]);
 
         setWeatherLoading(false);
