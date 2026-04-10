@@ -279,12 +279,7 @@ export function SimpleMap({ selectedLocation, onLocationSelect }: SimpleMapProps
         </div>
       </div>
 
-      {/* Attribution */}
-      <div className="absolute bottom-2 left-2 z-[999]">
-        <div className="bg-black/60 backdrop-blur-sm rounded px-2 py-1">
-          <span className="text-[10px] text-gray-500">© CARTO © OSM © Esri</span>
-        </div>
-      </div>
+
 
       <style jsx global>{`
         .pulsing-marker {

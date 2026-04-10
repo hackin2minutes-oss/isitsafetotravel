@@ -11,6 +11,21 @@ interface Message {
   timestamp: Date;
 }
 
+interface WikiArticle {
+  title: string;
+  extract: string;
+  description: string;
+  url: string;
+}
+
+interface Place {
+  id: number;
+  name: string;
+  type: string;
+  lat: number;
+  lon: number;
+}
+
 interface IntelligenceAssistantProps {
   location: Location | null;
   assessment: SafetyAssessment | null;
@@ -21,6 +36,8 @@ export function IntelligenceAssistant({ location, assessment }: IntelligenceAssi
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [wikiData, setWikiData] = useState<WikiArticle[]>([]);
+  const [placesData, setPlacesData] = useState<Record<string, Place[]>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,19 +46,42 @@ export function IntelligenceAssistant({ location, assessment }: IntelligenceAssi
     }
   }, [messages, isLoading]);
 
+  // Fetch data when location changes
   useEffect(() => {
-    if (messages.length === 0) {
-      const locationName = location?.name || 'Global';
-      setMessages([
-        {
-          id: '1',
-          role: 'assistant',
-          content: `Welcome to ${locationName}! I'm your AI travel assistant. Ask me about safety, weather, local tips, or anything about this destination.`,
-          timestamp: new Date()
-        }
-      ]);
+    async function fetchAllData() {
+      if (location?.coordinates) {
+        const { latitude, longitude } = location.coordinates;
+        
+        // Fetch Wikipedia + places in parallel
+        const [wikiRes, placesRes] = await Promise.all([
+          fetch(`/api/wiki?q=${encodeURIComponent(location.name)}&limit=5`),
+          fetch(`/api/places?lat=${latitude}&lon=${longitude}&category=attractions&limit=10`),
+        ]);
+        
+        const wikiJson = await wikiRes.json();
+        const placesJson = await placesRes.json();
+        
+        setWikiData(wikiJson.articles || []);
+        setPlacesData({ attractions: placesJson.places || [] });
+      } else {
+        setWikiData([]);
+        setPlacesData({});
+      }
     }
-  }, [location, messages.length]);
+    fetchAllData();
+  }, [location?.name, location?.coordinates]);
+
+  useEffect(() => {
+    const locationName = location?.name || 'Global';
+    setMessages([
+      {
+        id: '1',
+        role: 'assistant',
+        content: `Welcome to ${locationName}! I'm your AI travel assistant. Ask me about safety, weather, places to visit, local tips, history, or anything about this destination.`,
+        timestamp: new Date()
+      }
+    ]);
+  }, [location?.name]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +106,9 @@ export function IntelligenceAssistant({ location, assessment }: IntelligenceAssi
         body: JSON.stringify({
           messages: [...messages, userMessage],
           location,
-          assessment
+          assessment,
+          wikiData,
+          placesData
         })
       });
 
@@ -74,7 +116,6 @@ export function IntelligenceAssistant({ location, assessment }: IntelligenceAssi
 
       if (data.error) {
         setError(data.error);
-        // Fallback to simple response
         const fallbackMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',

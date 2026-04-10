@@ -1,31 +1,22 @@
-import axios from 'axios';
 import { WeatherData } from '@/types';
 
-/**
- * WEATHER_SERVICE v3.0 (Open-Meteo Edition)
- * Uses internal Next.js API Proxy to fetch 100% free data without keys.
- */
 export async function getWeatherData(lat: number, lon: number): Promise<WeatherData | null> {
   try {
-    // Fetch both Weather and Disaster data concurrently
     const [weatherRes, disasterRes] = await Promise.all([
-      axios.get(`/api/weather`, { params: { lat, lon } }).catch(() => null),
-      axios.get(`/api/disaster`, { params: { lat, lon } }).catch(() => null)
+      fetch(`/api/weather?lat=${lat}&lon=${lon}`).then(r => r.json()).catch(() => null),
+      fetch(`/api/disaster?lat=${lat}&lon=${lon}`).then(r => r.json()).catch(() => null)
     ]);
 
-    const data = weatherRes?.data;
-    if (!data || !data.current) return null;
+    if (!weatherRes || !weatherRes.current) return null;
     
-    const current = data.current;
+    const current = weatherRes.current;
     const initialRiskFactors = getRiskFactors(current.weather_code);
     
-    // Inject Earthquake Data if available
     const extraRiskFactors: string[] = [];
-    if (disasterRes?.data?.features && disasterRes.data.features.length > 0) {
-      const quakes = disasterRes.data.features;
-      // Get the highest magnitude recent quake
-      const worstQuake = quakes.reduce((prev: any, current: any) => {
-        return (prev.properties.mag > current.properties.mag) ? prev : current;
+    if (disasterRes?.features && disasterRes.features.length > 0) {
+      const quakes = disasterRes.features;
+      const worstQuake = quakes.reduce((prev: any, curr: any) => {
+        return (prev.properties.mag > curr.properties.mag) ? prev : curr;
       });
       extraRiskFactors.push(`Recent Earthquake: Mag ${worstQuake.properties.mag} (${worstQuake.properties.place})`);
     }
