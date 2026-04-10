@@ -92,6 +92,7 @@ export default function Home() {
 
   // --- HANDLERS ---
   const handleLocationSelect = async (location: Location) => {
+    console.log('page.tsx: handleLocationSelect called', location);
     setSidebarOpen(true);
     await fetchSafetyData(location);
   };

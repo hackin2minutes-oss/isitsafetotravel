@@ -31,6 +31,7 @@ export function useSafetyData() {
   const [retryCount, setRetryCount] = useState(0);
 
   const fetchSafetyData = useCallback(async (location: Location): Promise<SafetyAssessment | null> => {
+    console.log('useSafetyData: fetchSafetyData called', location);
     setIsAnalyzing(true);
     setError(null);
     setWeatherLoading(true);
@@ -74,6 +75,7 @@ export function useSafetyData() {
         setSecurityLoading(false);
 
         const result = calculateSafetyAssessment(weather, aqi, security, finalLocation, intel, news, aviation, originCountry);
+        console.log('useSafetyData: Assessment calculated', result?.score);
         
         setAssessment(result);
         setSelectedLocation(finalLocation);

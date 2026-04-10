@@ -55,6 +55,7 @@ export function SearchPanel({ onLocationSelect }: SearchPanelProps) {
   }, []);
 
   const handleSelect = (loc: Location) => {
+    console.log('SearchPanel: Location selected', loc);
     onLocationSelect(loc);
     setQuery('');
     setResults([]);
