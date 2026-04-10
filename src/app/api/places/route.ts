@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const OVERPASS_QUERIES: Record<string, string> = {
-  attractions: '[out:json][timeout:15];(node["tourism"](around:$RADIUS$,$LAT$,$LON$);way["tourism"](around:$RADIUS$,$LAT$,$LON$););out center $LIMIT$;',
+  attractions: '[out:json][timeout:15];(node["tourism"~"attraction|museum|gallery|monument|viewpoint|zoo|theme_park|aquarium|information|artwork"](around:$RADIUS$,$LAT$,$LON$);way["tourism"~"attraction|museum|gallery|monument|viewpoint|zoo|theme_park|aquarium"](around:$RADIUS$,$LAT$,$LON$);node["historic"](around:$RADIUS$,$LAT$,$LON$);way["historic"](around:$RADIUS$,$LAT$,$LON$););out center $LIMIT$;',
   restaurants: '[out:json][timeout:15];(node["amenity"="restaurant"](around:$RADIUS$,$LAT$,$LON$);node["amenity"="cafe"](around:$RADIUS$,$LAT$,$LON$);way["amenity"="restaurant"](around:$RADIUS$,$LAT$,$LON$);way["amenity"="cafe"](around:$RADIUS$,$LAT$,$LON$););out center $LIMIT$;',
   hotels: '[out:json][timeout:15];(node["tourism"="hotel"](around:$RADIUS$,$LAT$,$LON$);node["tourism"="hostel"](around:$RADIUS$,$LAT$,$LON$);way["tourism"="hotel"](around:$RADIUS$,$LAT$,$LON$);way["tourism"="hostel"](around:$RADIUS$,$LAT$,$LON$););out center $LIMIT$;',
   shopping: '[out:json][timeout:15];(node["shop"](around:$RADIUS$,$LAT$,$LON$);way["shop"](around:$RADIUS$,$LAT$,$LON$););out center $LIMIT$;',
@@ -19,21 +19,24 @@ const OVERPASS_ENDPOINTS = [
 
 const SAMPLE_PLACES: Record<string, any[]> = {
   attractions: [
-    { id: '1', name: 'Statue of Liberty', type: 'monument', lat: 40.6892, lon: -74.0445, address: 'Liberty Island, New York, NY', description: 'Iconic copper statue on Liberty Island' },
-    { id: '2', name: 'Central Park', type: 'park', lat: 40.7829, lon: -73.9654, address: 'Manhattan, New York, NY', description: 'Iconic urban park in Manhattan' },
-    { id: '3', name: 'Empire State Building', type: 'attraction', lat: 40.7484, lon: -73.9857, address: '350 Fifth Avenue, New York, NY', description: 'Historic 102-story skyscraper' },
-    { id: '4', name: 'Times Square', type: 'attraction', lat: 40.7580, lon: -73.9855, address: 'Manhattan, New York, NY', description: 'Famous commercial intersection' },
-    { id: '5', name: 'Brooklyn Bridge', type: 'bridge', lat: 40.7061, lon: -73.9969, address: 'Brooklyn Bridge, New York, NY', description: 'Historic bridge connecting Manhattan and Brooklyn' },
+    { id: '1', name: 'Kingdom Centre', type: 'landmark', lat: 24.7116, lon: 46.6752, address: 'Riyadh, Saudi Arabia', description: 'Iconic skyscraper with sky bridge' },
+    { id: '2', name: 'National Museum', type: 'museum', lat: 24.6460, lon: 46.7166, address: 'Riyadh, Saudi Arabia', description: 'Saudi Arabian history and culture' },
+    { id: '3', name: 'Masmak Fortress', type: 'historic', lat: 24.6339, lon: 46.7129, address: 'Riyadh, Saudi Arabia', description: '19th-century clay and mud fortress' },
+    { id: '4', name: 'Al Masmak Museum', type: 'museum', lat: 24.6340, lon: 46.7130, address: 'Riyadh, Saudi Arabia', description: 'History of Riyadh' },
+    { id: '5', name: 'Riyadh Zoo', type: 'zoo', lat: 24.6417, lon: 46.7217, address: 'Riyadh, Saudi Arabia', description: 'Family-friendly animal park' },
+    { id: '6', name: 'DIRIYAH', type: 'historic', lat: 24.7456, lon: 46.5844, address: 'Diriyah, Saudi Arabia', description: 'UNESCO heritage site, birthplace of Saudi Arabia' },
+    { id: '7', name: 'Boulevard Riyadh City', type: 'attraction', lat: 24.8178, lon: 46.6285, address: 'Riyadh, Saudi Arabia', description: 'Entertainment and shopping destination' },
+    { id: '8', name: 'King Abdullah Financial District', type: 'landmark', lat: 24.8036, lon: 46.6275, address: 'Riyadh, Saudi Arabia', description: 'Modern financial district' },
   ],
   restaurants: [
-    { id: '1', name: 'Local Restaurant', type: 'restaurant', lat: 40.7128, lon: -74.0060, address: 'Downtown', description: 'Popular local dining spot' },
-    { id: '2', name: 'City Cafe', type: 'cafe', lat: 40.7140, lon: -74.0080, address: 'Main Street', description: 'Cozy coffee shop' },
+    { id: '1', name: 'The Noodle House', type: 'restaurant', lat: 24.7136, lon: 46.6753, address: 'Riyadh', description: 'Asian cuisine' },
+    { id: '2', name: 'Al Orjouan', type: 'restaurant', lat: 24.7115, lon: 46.6740, address: 'Riyadh', description: 'Saudi fine dining' },
   ],
   hotels: [
-    { id: '1', name: 'City Hotel', type: 'hotel', lat: 40.7150, lon: -74.0050, address: 'Business District', description: 'Modern accommodations' },
+    { id: '1', name: 'Four Seasons Riyadh', type: 'hotel', lat: 24.7125, lon: 46.6765, address: 'Riyadh', description: 'Luxury hotel' },
   ],
   default: [
-    { id: '1', name: 'Local Attraction', type: 'attraction', lat: 40.7128, lon: -74.0060, address: 'City Center', description: 'Popular local destination' },
+    { id: '1', name: 'Kingdom Centre', type: 'landmark', lat: 24.7116, lon: 46.6752, address: 'Riyadh', description: 'Iconic Riyadh landmark' },
   ],
 };
 
@@ -73,7 +76,7 @@ export async function GET(request: NextRequest) {
       const data = JSON.parse(text);
       const elements = data.elements || [];
 
-      if (elements.length > 0) {
+      if (elements.length >= 5) {
         const places = elements.map((el: any) => ({
           id: String(el.id),
           name: el.tags?.name || el.tags?.['name:en'] || 'Unknown Place',
