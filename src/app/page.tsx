@@ -14,6 +14,7 @@ import { SearchPanel } from '@/components/SearchPanel';
 import { SafetyCard } from '@/components/SafetyCard';
 import { SimpleMap } from '@/components/SimpleMap';
 import { IntelligenceAssistant } from '@/components/IntelligenceAssistant';
+import { TripPlanner } from '@/components/TripPlanner';
 import { ReadinessQuiz } from '@/components/ReadinessQuiz';
 import { ICECardGenerator } from '@/components/ICECardGenerator';
 import { useSafetyData } from '@/hooks/useSafetyData';
@@ -25,7 +26,7 @@ import { GPI_2025_COUNTRIES } from '@/data/gpi2025';
 
 const MOCK_COUNTRIES = GPI_2025_COUNTRIES;
 
-type ViewMode = 'location' | 'compare' | 'comms';
+type ViewMode = 'location' | 'compare' | 'comms' | 'planner';
 type ViewPreference = 'auto' | 'mobile' | 'desktop';
 
 export default function Home() {
@@ -316,16 +317,17 @@ export default function Home() {
                <div 
                  className="absolute h-[calc(100%-8px)] rounded-lg transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-lg"
                  style={{
-                   width: 'calc(33.33% - 4px)',
-                   left: '4px',
-                   backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                   border: '1px solid rgba(99, 102, 241, 0.2)',
-                   transform: viewMode === 'location' ? 'translateX(0)' : viewMode === 'compare' ? 'translateX(100%)' : 'translateX(200%)'
-                 }}
+                    width: 'calc(25% - 6px)',
+                    left: '4px',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    transform: viewMode === 'location' ? 'translateX(0)' : viewMode === 'compare' ? 'translateX(100%)' : viewMode === 'comms' ? 'translateX(200%)' : 'translateX(300%)'
+                  }}
                />
-               <button onClick={() => setViewMode('location')} className={`relative z-10 flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest transition-colors ${viewMode === 'location' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Analyst</button>
-               <button onClick={() => setViewMode('compare')} className={`relative z-10 flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest transition-colors ${viewMode === 'compare' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Compare</button>
-               <button onClick={() => setViewMode('comms')} className={`relative z-10 flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest transition-colors ${viewMode === 'comms' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>AskSawan</button>
+<button onClick={() => setViewMode('location')} className={`relative z-10 flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest transition-colors ${viewMode === 'location' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Analyst</button>
+                <button onClick={() => setViewMode('compare')} className={`relative z-10 flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest transition-colors ${viewMode === 'compare' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Compare</button>
+                <button onClick={() => setViewMode('comms')} className={`relative z-10 flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest transition-colors ${viewMode === 'comms' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>AskSawan</button>
+                <button onClick={() => setViewMode('planner')} className={`relative z-10 flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest transition-colors ${viewMode === 'planner' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}>Plan Trip</button>
              </div>
            </div>
 
@@ -338,11 +340,16 @@ export default function Home() {
                </div>
              )}
              {viewMode === 'compare' && renderCompare()}
-             {viewMode === 'comms' && (
-               <div className="h-[calc(100vh-280px)]">
-                  <IntelligenceAssistant location={selectedLocation} assessment={assessment} />
-               </div>
-             )}
+{viewMode === 'comms' && (
+                <div className="h-[calc(100vh-280px)]">
+                   <IntelligenceAssistant location={selectedLocation} assessment={assessment} />
+                </div>
+              )}
+              {viewMode === 'planner' && (
+                <div className="pb-20 md:pb-8">
+                   <TripPlanner />
+                </div>
+              )}
            </div>
         </aside>
 
