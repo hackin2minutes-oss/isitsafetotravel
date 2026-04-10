@@ -160,7 +160,7 @@ describe('BriefGenerator', () => {
       fireEvent.click(screen.getByRole('button'));
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
-      expect(copiedText).toContain('No recent headlines detected');
+      expect(copiedText).toContain('No specific operational directives');
     });
 
     it('handles empty news array gracefully', () => {

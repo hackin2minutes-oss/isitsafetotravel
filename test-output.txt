@@ -1,0 +1,63 @@
+
+ RUN  v4.1.3 /Users/sawan/Desktop/is it safe copy
+
+ ❯ src/components/SearchPanel.test.tsx (16 tests | 16 failed) 114ms
+       × renders the search input 21ms
+       × renders the Search_Global_Database label 5ms
+       × renders the Free_Data keyboard hint 3ms
+       × renders the passport/origin country selector 54ms
+       × does not search when query is less than 3 characters 2ms
+       × calls searchLocations when query is 3 or more characters 3ms
+       × debounces the search to avoid excessive API calls 2ms
+       × shows indexing indicator while searching 2ms
+       × clears results when query is cleared 2ms
+       × shows results dropdown when results are available 2ms
+       × calls onLocationSelect when a result is clicked 2ms
+       × shows no results message when search returns empty 2ms
+       × displays country name and coordinates for each result 2ms
+       × clears input when clear button is clicked 1ms
+       × opens dropdown on input focus 1ms
+       × renders origin country options 9ms
+ ❯ src/components/SafetyCard.test.tsx (18 tests | 18 failed) 192ms
+       × renders empty state when location and assessment are null 18ms
+       × renders skeleton loading UI when isLoading is true 4ms
+       × renders error state with message when error is present 2ms
+       × calls window.location.reload when Reinitialize button is clicked 47ms
+       × renders location name and country 44ms
+       × renders safety score and rating 4ms
+       × renders population and land area from quickFacts 3ms
+       × renders all 8 safety dimensions as risk bars 3ms
+       × renders risk bar values correctly 4ms
+       × renders all tips from the assessment 4ms
+       × renders emergency contacts section 4ms
+       × renders airspace status 4ms
+       × renders airspace as restricted when status is restricted 4ms
+       × renders war zone banner when warStatus is active_war 30ms
+       × does not render war zone banner for normal locations 4ms
+       × renders view mode toggle buttons 3ms
+       × starts in desktop view mode by default 4ms
+       × renders BriefGenerator component with location and assessment 4ms
+ ❯ src/components/BriefGenerator.test.tsx (17 tests | 2 failed) 1156ms
+       ✓ renders the Tactical Brief heading 16ms
+       ✓ renders the Export Intel Dossier subtitle 2ms
+       ✓ renders a description about the brief 2ms
+       ✓ copies the brief text to clipboard when copy button is clicked 59ms
+       × shows Check icon after copying 1012ms
+       ✓ includes location name in the brief 6ms
+       ✓ includes security rating and score in the brief 8ms
+       ✓ includes emergency contacts in the brief 5ms
+       ✓ includes travel requirements in the brief 5ms
+       ✓ includes tips/operational directives in the brief 6ms
+       ✓ includes logistics and airspace info in the brief 4ms
+       ✓ includes population and land area in the brief 4ms
+       ✓ includes news items in the brief 4ms
+       × handles empty tips array gracefully 8ms
+       ✓ handles empty news array gracefully 4ms
+       ✓ handles restricted airspace in the brief 3ms
+       ✓ handles closed airspace in the brief 6ms
+
+ Test Files  3 failed (3)
+      Tests  36 failed | 15 passed (51)
+   Start at  15:22:35
+   Duration  1.81s (transform 149ms, setup 192ms, import 421ms, tests 1.46s, environment 1.01s)
+

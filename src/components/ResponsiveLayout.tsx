@@ -8,16 +8,10 @@ interface ResponsiveLayoutProps {
 }
 
 export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
-  const { isMobile, isTablet, isDesktop } = useDeviceDetection();
-
-  const layoutClass = isMobile 
-    ? 'layout--mobile' 
-    : isTablet 
-    ? 'layout--tablet' 
-    : 'layout--desktop';
+  const { isDesktop, isHydrated } = useDeviceDetection();
 
   return (
-    <div className={`layout min-h-screen transition-colors duration-500 ${layoutClass}`}>
+    <div className={`layout min-h-screen ${isDesktop ? 'layout--desktop' : 'layout--mobile'} ${!isHydrated ? 'invisible' : 'visible'}`}>
       {children}
     </div>
   );

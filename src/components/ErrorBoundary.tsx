@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
-          <div className="max-w-lg w-full bg-slate-900 rounded-3xl border border-rose-500/20 shadow-2xl shadow-rose-900/20 overflow-hidden animate-safe-fade-in">
+          <div className="max-w-lg w-full bg-slate-900 rounded-3xl border border-rose-500/20 p-6">
             <div className="p-8 lg:p-12 flex flex-col items-center text-center gap-6">
               <div className="w-20 h-20 rounded-3xl bg-rose-500/10 flex items-center justify-center">
                 <ShieldAlert className="w-10 h-10 text-rose-500" />

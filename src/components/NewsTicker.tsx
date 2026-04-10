@@ -91,7 +91,7 @@ export function NewsTicker({ items }: NewsTickerProps) {
         }
         .animate-ticker {
           display: flex;
-          animation: ticker 40s linear infinite;
+          animation: ticker 120s linear infinite;
         }
         .animate-ticker:hover {
           animation-play-state: paused;

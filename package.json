@@ -12,9 +12,11 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "pages:build": "npx @cloudflare/next-on-pages",
-    "deploy": "npm run pages:build && npx wrangler pages deploy .vercel/output/static"
+    "deploy": "npm run build && npm run pages:build",
+    "deploy:wrangler": "npx wrangler pages deploy .vercel/output/static --project-name=isitsafetotravel"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@tanstack/react-query": "^5.24.1",
     "axios": "^1.14.0",
     "clsx": "^2.1.0",
@@ -24,10 +26,12 @@
     "lucide-react": "^0.330.0",
     "mapbox-gl": "^3.1.2",
     "next": "15.0.0",
+    "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-leaflet": "^4.2.1",
     "react-map-gl": "^7.1.7",
+    "topojson-client": "^3.1.0",
     "web-vitals": "^5.2.0",
     "zustand": "^4.5.0"
   },

@@ -80,6 +80,16 @@ export interface NewsData {
   lastUpdated: string;
 }
 
+export interface AviationData {
+  status: 'open' | 'restricted' | 'closed';
+  headline?: string;
+  warning?: string | null;
+  source?: string;
+  sourceUrl?: string;
+  lastUpdated?: string;
+  error?: string;
+}
+
 export interface DimensionData {
   score: number;
   source: string;
@@ -130,6 +140,13 @@ export interface QuickFacts {
   landArea: string;
 }
 
+export interface OperationalHazard {
+  id: string;
+  title: string;
+  severity: 'high' | 'moderate' | 'low';
+  description: string;
+}
+
 export interface SafetyAssessment {
   score: number;
   rating: 'VERY SAFE' | 'SAFE' | 'MODERATE' | 'CAUTION' | 'DANGEROUS' | 'CRITICAL';
@@ -148,6 +165,7 @@ export interface SafetyAssessment {
   emergency: EmergencyContacts;
   news: NewsItem[];
   logistics: LogisticStatus;
+  hazards: OperationalHazard[];
   
   recommendation: string;
   lastUpdated: string;

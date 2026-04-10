@@ -31,13 +31,17 @@ export const mockAssessment: SafetyAssessment = {
     },
   },
   airQuality: {
-    aqi: 42,
-    category: 'Good',
-    pm25: 12,
-    pm10: 25,
-    no2: 30,
-    o3: 35,
-    so2: 5,
+    score: 85,
+    status: 'Good',
+    data: {
+      aqi: 42,
+      category: 'Good',
+      pm25: 12,
+      pm10: 25,
+      no2: 30,
+      o3: 35,
+      so2: 5,
+    }
   },
   security: {
     score: 82,
@@ -53,14 +57,14 @@ export const mockAssessment: SafetyAssessment = {
     },
   },
   dimensions: {
-    crime: 7,
-    political: 8,
-    health: 9,
-    terrorism: 6,
-    disaster: 9,
-    transport: 8,
-    womenSafety: 7,
-    lgbtqSafety: 8,
+    atmospheric: { score: 7, source: 'Mock', justification: 'Average.' },
+    meteorological: { score: 8, source: 'Mock', justification: 'Good.' },
+    geopolitical: { score: 9, source: 'Mock', justification: 'Stable.' },
+    security: { score: 6, source: 'Mock', justification: 'Moderate risk.' },
+    airQualityIndex: { score: 9, source: 'Mock', justification: 'Clear.' },
+    womenSafety: { score: 8, source: 'Mock', justification: 'Safe.' },
+    lgbtqSafety: { score: 7, source: 'Mock', justification: 'Accepting.' },
+    childSafety: { score: 8, source: 'Mock', justification: 'Child friendly.' },
   },
   advisories: [
     {

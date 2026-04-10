@@ -1,4 +1,4 @@
-import { Dimensions, Advisory, EmergencyContacts, TravelRequirements, QuickFacts, WeatherData, AirQualityData, SecurityData, Location, IntelData, LogisticStatus } from '@/types';
+import { WeatherData, AirQualityData, SecurityData, Location, IntelData, Dimensions, Advisory, QuickFacts, LogisticStatus, EmergencyContacts, TravelRequirements, AviationData, OperationalHazard } from '@/types';
 import { WORLD_CENSUS_DB } from '@/data/worldDatabase';
 
 // ============================================================
@@ -258,6 +258,36 @@ const CALLING_CODES: Record<string, string> = {
 };
 
 // ============================================================
+// OPERATIONAL HAZARDS & COMMON SCAMS DATABASE
+// ============================================================
+const HAZARD_DB: Record<string, OperationalHazard[]> = {
+  FR: [
+    { id: 'fr-01', title: 'Friendship Bracelet Scam', severity: 'moderate', description: 'Individuals attempt to tie a bracelet around your wrist and demand payment. Common near Sacré-Cœur.' },
+    { id: 'fr-02', title: 'Fake Petitioners', severity: 'low', description: 'Pickpockets posing as charity workers with clipboards to distract you.' }
+  ],
+  ES: [
+    { id: 'es-01', title: 'Distraction Pickpockets', severity: 'moderate', description: 'Groups using maps or spilling liquids to distract travelers in high-traffic areas.' },
+    { id: 'es-02', title: 'Street Game Scams', severity: 'low', description: 'Shell games or Bird poop scams found in Las Ramblas.' }
+  ],
+  TH: [
+    { id: 'th-01', title: 'Grand Palace is Closed', severity: 'moderate', description: 'Tuk-tuk drivers claiming major sites are closed to divert you to gem shops or tailor shops.' },
+    { id: 'th-02', title: 'Jet Ski Damage Scam', severity: 'high', description: 'Operators claiming pre-existing damage on return of rental equipment. Common in Phuket/Pattaya.' }
+  ],
+  IN: [
+    { id: 'in-01', title: 'Fake Tourist Offices', severity: 'moderate', description: 'Taxis claiming your hotel is closed or inaccessible to take you to a commission-based agency.' },
+    { id: 'in-02', title: 'Bird Poop Scam', severity: 'low', description: 'Distraction used to clean "poop" off your shoulder while pickpocketing.' }
+  ],
+  US: [
+    { id: 'us-01', title: 'Times Square Character Photos', severity: 'low', description: 'Aggressive demand for tips after posing for photos with costumed characters.' },
+    { id: 'us-02', title: 'Fake Shell Apps', severity: 'moderate', description: 'Skimming devices located on non-bank ATMs in transit hubs.' }
+  ],
+  _DEFAULT: [
+    { id: 'def-01', title: 'Airport Taxi Scams', severity: 'moderate', description: 'Unregulated drivers quoting high prices or claiming the meter is broken.' },
+    { id: 'def-02', title: 'Public Wi-Fi Skimming', severity: 'moderate', description: 'Man-in-the-middle attacks on unsecured public networks in cafes.' }
+  ]
+};
+
+// ============================================================
 // INTELLIGENCE ENGINE v5.0
 // ============================================================
 export function generateIntelligenceData(
@@ -266,7 +296,8 @@ export function generateIntelligenceData(
   aqi: AirQualityData,
   security: SecurityData,
   overallScore: number,
-  intel?: IntelData | null
+  intel?: IntelData | null,
+  aviation?: AviationData | null
 ) {
   const isWarzone = security.warStatus === 'active_war';
   const code = (location.countryId || '').toUpperCase();
@@ -474,15 +505,71 @@ export function generateIntelligenceData(
   };
 
   // --- LOGISTICS & AIRSPACE ---
+  // Primary source: OpsGroup SafeAirspace (safeairspace.net)
+  const isSevereWeather = weather.windSpeed > 80 || weather.riskFactors.some(r => ['Heavy Rain', 'Heavy Snow', 'Thunderstorm'].includes(r));
+  const isGeopoliticallyClosed = isWarzone || security.threatLevel === 'critical';
+
+  let airspace: 'open' | 'restricted' | 'closed' = 'open';
+  let transport: 'nominal' | 'disrupted' | 'critical' = 'nominal';
+  let logDetails = 'No active advisories. All transport hubs operating within normal parameters.';
+
+  // --- Primary: OpsGroup SafeAirspace live data ---
+  if (aviation && !aviation.error) {
+    if (aviation.status === 'closed') {
+      airspace = 'closed';
+      transport = 'critical';
+      logDetails = aviation.headline
+        ? `⛔ ${aviation.headline}. Source: ${aviation.source}`
+        : `CRITICAL: Airspace closed per OpsGroup SafeAirspace. Commercial flights suspended.`;
+    } else if (aviation.status === 'restricted') {
+      airspace = 'restricted';
+      transport = 'disrupted';
+      logDetails = aviation.headline
+        ? `⚠️ ${aviation.headline}. Source: ${aviation.source}`
+        : `ADVISORY: Airspace restrictions or cautions in effect. Verify with your operator.`;
+    } else {
+      // open per SafeAirspace — but still apply weather/geo overrides
+      if (isGeopoliticallyClosed) {
+        airspace = 'closed';
+        transport = 'critical';
+        logDetails = 'CRITICAL: Airspace closed due to active conflict. Commercial flights suspended.';
+      } else if (isSevereWeather) {
+        airspace = 'restricted';
+        transport = 'disrupted';
+        logDetails = `WEATHER DELAY: Hazardous conditions detected (${weather.condition}, ${weather.windSpeed} km/h). Expect delays. No SafeAirspace advisory currently active.`;
+      } else {
+        logDetails = aviation.source
+          ? `No active advisories per OpsGroup SafeAirspace. Normal commercial operations confirmed.`
+          : 'All transport hubs operating within nominal parameters. Standard transit protocols active.';
+      }
+    }
+  } else {
+    // Fallback when SafeAirspace is unreachable
+    if (isGeopoliticallyClosed) {
+      airspace = 'closed';
+      transport = 'critical';
+      logDetails = 'CRITICAL: Airspace closed due to active conflict. Commercial flights suspended. Land borders restricted.';
+    } else if (isSevereWeather) {
+      airspace = 'restricted';
+      transport = 'disrupted';
+      logDetails = `WEATHER DELAY: Severe conditions (${weather.condition}) may impact operations. Verify with carrier.`;
+    } else {
+      // For general high risk, we stay 'open' but add a security advisory to the details
+      airspace = 'open';
+      transport = isHighRisk ? 'disrupted' : 'nominal';
+      logDetails = isHighRisk 
+        ? 'SECURITY ADVISORY: Elevated security in effect at transport hubs. Expect enhanced screenings and potential delays. Airspace currently remains OPEN.'
+        : 'All transport hubs operating within nominal parameters. Standard transit protocols active.';
+    }
+  }
+
   const logistics: LogisticStatus = {
-    airspace: isWarzone ? 'closed' : isHighRisk ? 'restricted' : 'open',
-    transport: isWarzone ? 'critical' : isHighRisk ? 'disrupted' : 'nominal',
-    details: isWarzone 
-      ? 'Airspace is contested or closed. Commercial flights suspended. Land borders restricted.'
-      : isHighRisk 
-        ? 'Aviation advisories in effect. Expect significant delays and enhanced security screenings.' 
-        : 'All transport hubs operating within nominal parameters. Standard transit protocols active.',
+    airspace,
+    transport,
+    details: logDetails,
   };
 
-  return { dimensions, quickFacts, emergency, tips, advisories, requirements, logistics };
+  const hazards = HAZARD_DB[code] || HAZARD_DB['_DEFAULT'];
+
+  return { dimensions, quickFacts, emergency, tips, advisories, requirements, logistics, hazards };
 }

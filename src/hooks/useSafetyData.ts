@@ -6,7 +6,7 @@ import { getSecurityData } from '@/services/securityService';
 import { calculateSafetyAssessment } from '@/utils/scoreCalculator';
 import { reverseGeocode } from '@/services/locationService';
 import { fetchWithRetry } from '@/utils/fetchWithRetry';
-import { Location, SafetyAssessment, IntelData, NewsData } from '@/types';
+import { Location, SafetyAssessment, IntelData, NewsData, AviationData } from '@/types';
 import { fetchWithCache } from '@/utils/performance';
 
 const MAX_RETRIES = 2;
@@ -56,8 +56,9 @@ export function useSafetyData() {
         const apiBase = typeof window !== 'undefined' ? window.location.origin : '';
         const intelUrl = `${apiBase}/api/intel?code=${countryCode}`;
         const newsUrl = `${apiBase}/api/news?q=${encodeURIComponent(countryName)}`;
+        const aviationUrl = `${apiBase}/api/aviation?country=${encodeURIComponent(countryName)}`;
 
-        const [weather, aqi, security, intel, news] = await Promise.all([
+        const [weather, aqi, security, intel, news, aviation] = await Promise.all([
           getWeatherData(latitude, longitude).catch(() => null),
           getAirQualityData(latitude, longitude).catch(() => null),
           getSecurityData(countryName, countryCode).catch(() => null),
@@ -65,13 +66,14 @@ export function useSafetyData() {
             ? fetchWithCache<IntelData>(intelUrl).catch(() => null)
             : Promise.resolve(null),
           fetchWithCache<NewsData>(newsUrl).catch(() => null),
+          fetchWithCache<AviationData>(aviationUrl).catch(() => null),
         ]);
 
         setWeatherLoading(false);
         setAqiLoading(false);
         setSecurityLoading(false);
 
-        const result = calculateSafetyAssessment(weather, aqi, security, finalLocation, intel, news, originCountry);
+        const result = calculateSafetyAssessment(weather, aqi, security, finalLocation, intel, news, aviation, originCountry);
         
         setAssessment(result);
         setSelectedLocation(finalLocation);

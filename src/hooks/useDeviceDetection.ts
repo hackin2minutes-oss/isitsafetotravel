@@ -8,15 +8,17 @@ interface DeviceInfo {
   isDesktop: boolean;
   screenWidth: number;
   userAgent: string;
+  isHydrated: boolean;
 }
 
 export const useDeviceDetection = (): DeviceInfo => {
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>({
     isMobile: false,
     isTablet: false,
-    isDesktop: true,
-    screenWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
-    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+    isDesktop: false,
+    screenWidth: 1024,
+    userAgent: '',
+    isHydrated: false,
   });
 
   useEffect(() => {
@@ -32,10 +34,11 @@ export const useDeviceDetection = (): DeviceInfo => {
         isDesktop,
         screenWidth: width,
         userAgent: navigator.userAgent,
+        isHydrated: true,
       });
     };
 
-    handleResize(); // Initial check
+    handleResize();
     window.addEventListener('resize', handleResize, { passive: true });
     return () => window.removeEventListener('resize', handleResize);
   }, []);

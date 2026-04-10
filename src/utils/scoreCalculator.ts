@@ -1,4 +1,4 @@
-import { WeatherData, AirQualityData, SecurityData, SafetyAssessment, Location, IntelData, NewsData } from '@/types';
+import { WeatherData, AirQualityData, SecurityData, SafetyAssessment, Location, IntelData, NewsData, AviationData } from '@/types';
 import { generateIntelligenceData } from '@/services/intelligenceService';
 
 export function getRatingFromScore(score: number): SafetyAssessment['rating'] {
@@ -107,6 +107,7 @@ export function calculateSafetyAssessment(
   location: Location,
   intel?: IntelData | null,
   news?: NewsData | null,
+  aviation?: AviationData | null,
   originCountry: string = 'US'
 ): SafetyAssessment {
   // Safe Fallbacks
@@ -146,7 +147,7 @@ export function calculateSafetyAssessment(
   };
 
   // 7. Inject Intelligence data
-  const intelligence = generateIntelligenceData(location, sw, sa, ss, finalScore, intel);
+  const intelligence = generateIntelligenceData(location, sw, sa, ss, finalScore, intel, aviation);
 
   return {
     score: finalScore,
@@ -165,6 +166,7 @@ export function calculateSafetyAssessment(
     requirements: intelligence.requirements,
     news: news?.items || [],
     logistics: intelligence.logistics,
+    hazards: intelligence.hazards,
     
     recommendation: overrideReason 
       ? 'EMERGENCY ADVISORY: Do not travel to this region. Follow local consulate directives immediately.' 
