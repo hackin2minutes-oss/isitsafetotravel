@@ -97,7 +97,7 @@ export function GestureSheet({ children, snapPoints = [80, 60, 15], initialSnap 
   return (
     <div 
       className={`fixed left-0 right-0 bottom-0 z-[500] bg-[#090A0D]/95 backdrop-blur-2xl border-t border-white/10 rounded-t-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.5)] ${!isDragging ? 'transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]' : ''}`}
-      style={{ top: \`\${boundedTop}%\` }}
+      style={{ top: `${boundedTop}%` }}
       onFocusCapture={handleFocus}
     >
       <div 

@@ -191,7 +191,7 @@ export function TripPlanner() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="planner-container">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -281,6 +281,7 @@ export function TripPlanner() {
               <input
                 type="text"
                 value={stop.destination}
+                data-testid="planner-destination"
                 onChange={(e) => updateStop(index, 'destination', e.target.value)}
                 placeholder="City or country..."
                 className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-violet-500/50"
@@ -311,6 +312,7 @@ export function TripPlanner() {
           <button
             onClick={addStop}
             className="w-full py-3 border border-dashed border-slate-700 rounded-xl text-sm text-slate-400 hover:text-violet-400 hover:border-violet-500/50 transition-all flex items-center justify-center gap-2"
+            data-testid="planner-add-stop"
           >
             <MapPin className="w-4 h-4" />
             Add Another Stop
@@ -325,7 +327,7 @@ export function TripPlanner() {
             <Sparkles className="w-4 h-4 text-violet-400" />
             What are you into?
           </h3>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2" data-testid="planner-interests">
             {INTERESTS.map(interest => {
               const Icon = interest.icon;
               const isSelected = preferences.interests.includes(interest.id);
@@ -338,6 +340,7 @@ export function TripPlanner() {
                       ? `bg-${interest.color}-500/20 border-${interest.color}-500/50 text-white`
                       : 'bg-slate-800/30 border-slate-700/50 text-slate-400 hover:border-slate-600'
                   }`}
+                  data-testid={`planner-interest-${interest.id}`}
                   style={isSelected ? {
                     backgroundColor: `var(--tw-${interest.color}-500, rgba(139, 92, 246, 0.2))`,
                     borderColor: `var(--tw-${interest.color}-500, rgba(139, 92, 246, 0.5))`
@@ -529,6 +532,7 @@ export function TripPlanner() {
         
         {currentStep < 4 && (
           <button
+            data-testid="planner-next"
             onClick={() => setCurrentStep(currentStep + 1)}
             disabled={!canProceed()}
             className="flex-1 py-3 bg-gradient-to-r from-violet-600 to-pink-600 rounded-xl text-sm font-bold text-white disabled:opacity-50 flex items-center justify-center gap-2"
@@ -540,6 +544,7 @@ export function TripPlanner() {
         
         {currentStep === 4 && (
           <button
+            data-testid="planner-generate"
             onClick={generateTrip}
             disabled={isGenerating}
             className="flex-1 py-4 bg-gradient-to-r from-violet-600 to-pink-600 rounded-xl text-sm font-bold text-white disabled:opacity-50 flex items-center justify-center gap-2"

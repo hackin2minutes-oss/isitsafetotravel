@@ -19,8 +19,11 @@ export function MobileAppShell({ renderMap, viewMode, setViewMode, renderContent
   // Default Map view (Analyst) starts with map focused (sheet at 60%). 
   // Comparing or messaging starts full screen (20%).
   const getInitialSnap = () => {
+    // Improve mobile UX: ensure Planner view starts with a reasonable sheet height
+    // Location (map) loads with map-focused sheet; Planner should be readily accessible.
     if (viewMode === 'location') return 1; // 60%
-    return 2; // 20%
+    if (viewMode === 'planner') return 1; // 60% to reveal planner content by default
+    return 2; // 20% for other modes (compare/comms)
   };
 
   return (
