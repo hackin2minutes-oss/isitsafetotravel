@@ -61,8 +61,14 @@ function getFallbackResponse(query: string, location: any, wikiData: any[], plac
 }
 
 export async function POST(request: Request) {
+  let location, assessment, wikiData, placesData;
   try {
-    const { messages, location, assessment, wikiData, placesData } = await request.json();
+    const json = await request.json();
+    location = json.location;
+    assessment = json.assessment;
+    wikiData = json.wikiData;
+    placesData = json.placesData;
+    const messages = json.messages;
     const userQuery = messages?.[messages.length - 1]?.content || 'Hello';
 
     const wikiText = wikiData?.map((a: any) => `${a.title}: ${a.extract || a.description || ''}`).join('\n') || '';

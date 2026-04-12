@@ -24,20 +24,20 @@ describe('BriefGenerator', () => {
   });
 
   describe('Rendering', () => {
-    it('renders the Tactical Brief heading', () => {
+    it('renders the Dossier Generation heading', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
-      expect(screen.getByText('Tactical Brief')).toBeInTheDocument();
+      expect(screen.getByText('Dossier Generation')).toBeInTheDocument();
     });
 
-    it('renders the Export Intel Dossier subtitle', () => {
+    it('renders the Export Intel Sector Sync subtitle', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
-      expect(screen.getByText('Export Intel Dossier')).toBeInTheDocument();
+      expect(screen.getByText('Export Intel // Sector Sync')).toBeInTheDocument();
     });
 
     it('renders a description about the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
       expect(
-        screen.getByText(/standardized text-based briefing/i)
+        screen.getByText(/STANDARD OPERATING PROCEDURE/i)
       ).toBeInTheDocument();
     });
   });
@@ -46,7 +46,7 @@ describe('BriefGenerator', () => {
     it('copies the brief text to clipboard when copy button is clicked', async () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      const copyBtn = screen.getByRole('button');
+      const copyBtn = screen.getAllByRole('button')[0];
       fireEvent.click(copyBtn);
 
       expect(mockClipboard.writeText).toHaveBeenCalledTimes(1);
@@ -60,7 +60,7 @@ describe('BriefGenerator', () => {
     it('shows Check icon after copying', async () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      const copyBtn = screen.getByRole('button');
+      const copyBtn = screen.getAllByRole('button')[0];
       fireEvent.click(copyBtn);
 
       const checkIcon = await screen.findByTestId('check-icon');
@@ -72,7 +72,7 @@ describe('BriefGenerator', () => {
     it('includes location name in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('LOCATION: LONDON');
@@ -81,7 +81,7 @@ describe('BriefGenerator', () => {
     it('includes security rating and score in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('SECURITY RATING: SAFE (Score: 85/100)');
@@ -90,7 +90,7 @@ describe('BriefGenerator', () => {
     it('includes emergency contacts in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('Police: 999');
@@ -102,7 +102,7 @@ describe('BriefGenerator', () => {
     it('includes travel requirements in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('TRAVEL REQUIREMENTS');
@@ -112,7 +112,7 @@ describe('BriefGenerator', () => {
     it('includes tips/operational directives in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('OPERATIONAL DIRECTIVES');
@@ -122,7 +122,7 @@ describe('BriefGenerator', () => {
     it('includes logistics and airspace info in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('LOGISTICS & AIRSPACE');
@@ -132,7 +132,7 @@ describe('BriefGenerator', () => {
     it('includes population and land area in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('GLOBAL CENSUS DATA');
@@ -143,7 +143,7 @@ describe('BriefGenerator', () => {
     it('includes news items in the brief', () => {
       render(<BriefGenerator location={mockLocation} assessment={mockAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('GEOPOLITICAL INTELLIGENCE');
@@ -157,7 +157,7 @@ describe('BriefGenerator', () => {
 
       render(<BriefGenerator location={mockLocation} assessment={noTipsAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('No specific operational directives');
@@ -168,7 +168,7 @@ describe('BriefGenerator', () => {
 
       render(<BriefGenerator location={mockLocation} assessment={noNewsAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('No recent headlines detected');
@@ -182,7 +182,7 @@ describe('BriefGenerator', () => {
 
       render(<BriefGenerator location={mockLocation} assessment={restrictedAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('Airspace: RESTRICTED');
@@ -196,7 +196,7 @@ describe('BriefGenerator', () => {
 
       render(<BriefGenerator location={mockLocation} assessment={closedAssessment} />);
 
-      fireEvent.click(screen.getByRole('button'));
+      fireEvent.click(screen.getAllByRole('button')[0]);
 
       const copiedText = mockClipboard.writeText.mock.calls[0][0] as string;
       expect(copiedText).toContain('Airspace: CLOSED');

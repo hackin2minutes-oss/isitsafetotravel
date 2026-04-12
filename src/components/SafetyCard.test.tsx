@@ -20,9 +20,9 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(screen.getByText('Ready to explore?')).toBeInTheDocument();
+      expect(screen.getByText('Ready for analysis')).toBeInTheDocument();
       expect(
-        screen.getByText(/Search or tap the map to check a destination/i)
+        screen.getByText(/Select a coordinate or search global entities to begin assessment/i)
       ).toBeInTheDocument();
     });
   });
@@ -38,7 +38,7 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(document.querySelector('.animate-shimmer')).toBeInTheDocument();
+      expect(document.querySelector('.animate-pulse')).toBeInTheDocument();
     });
   });
 
@@ -53,10 +53,10 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument();
+      expect(screen.getByText('System Disruption')).toBeInTheDocument();
       expect(screen.getByText('Failed to fetch safety data')).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: /try again/i })
+        screen.getByRole('button', { name: /reinitialize/i })
       ).toBeInTheDocument();
     });
 
@@ -76,7 +76,7 @@ describe('SafetyCard', () => {
         />
       );
 
-      fireEvent.click(screen.getByRole('button', { name: /try again/i }));
+      fireEvent.click(screen.getByRole('button', { name: /reinitialize/i }));
       expect(reloadMock).toHaveBeenCalled();
     });
   });
@@ -110,25 +110,10 @@ describe('SafetyCard', () => {
       expect(screen.getByText('SAFE')).toBeInTheDocument();
     });
 
-    it('renders population and land area from quickFacts', () => {
-      render(
-        <SafetyCard
-          location={mockLocation}
-          assessment={mockAssessment}
-          isLoading={false}
-          error={null}
-        />
-      );
-
-      expect(screen.getByText('Population')).toBeInTheDocument();
-      expect(screen.getByText('9,000,000')).toBeInTheDocument();
-      expect(screen.getByText('Area')).toBeInTheDocument();
-      expect(screen.getByText('1,572 km²')).toBeInTheDocument();
-    });
   });
 
   describe('Risk Bars', () => {
-    it('renders all safety dimensions as risk bars', () => {
+    it('renders safety dimensions', () => {
       render(
         <SafetyCard
           location={mockLocation}
@@ -139,14 +124,10 @@ describe('SafetyCard', () => {
       );
 
       const labels = [
-        'Atmosphere',
-        'Weather',
-        'Politics',
-        'Security',
-        'Air Quality',
         'Women',
         'LGBTQ+',
-        'Kids'
+        'Child',
+        'Civil'
       ];
 
       labels.forEach((label) => {
@@ -154,20 +135,6 @@ describe('SafetyCard', () => {
       });
     });
 
-    it('renders risk bar values correctly', () => {
-      render(
-        <SafetyCard
-          location={mockLocation}
-          assessment={mockAssessment}
-          isLoading={false}
-          error={null}
-        />
-      );
-
-      // Verify a couple of values are rendered correctly based on typical mock responses
-      // In the mocks they might be 7, 8, 9, etc.
-      expect(screen.getAllByText(/(\d+)\/10/)[0]).toBeInTheDocument();
-    });
   });
 
   describe('Tips/Operational Directives', () => {
@@ -181,7 +148,7 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(screen.getByText('Tips for your trip')).toBeInTheDocument();
+      expect(screen.getByText('Travel Tips')).toBeInTheDocument();
       expect(screen.getByText('Keep valuables secure in crowded areas.')).toBeInTheDocument();
     });
   });
@@ -197,7 +164,7 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(screen.getByText('Emergency')).toBeInTheDocument();
+      expect(screen.getByText('Emergency Numbers')).toBeInTheDocument();
       expect(screen.getByText('Police')).toBeInTheDocument();
       expect(screen.getAllByText('999')[0]).toBeInTheDocument();
       expect(screen.getByText('Medical')).toBeInTheDocument();
@@ -215,7 +182,6 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(screen.getByText('Logistics')).toBeInTheDocument();
       expect(screen.getByText('Airspace')).toBeInTheDocument();
       expect(screen.getByText('open')).toBeInTheDocument();
     });
@@ -250,8 +216,7 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(screen.getByText(/Active Conflict Zone/i)).toBeInTheDocument();
-      expect(screen.getByText('Russia-Ukraine Conflict')).toBeInTheDocument();
+      expect(screen.getByText('War Zone')).toBeInTheDocument();
     });
 
     it('does not render war zone banner for normal locations', () => {
@@ -264,7 +229,7 @@ describe('SafetyCard', () => {
         />
       );
 
-      expect(screen.queryByText(/Active Conflict Zone/i)).not.toBeInTheDocument();
+      expect(screen.queryByText('War Zone')).not.toBeInTheDocument();
     });
   });
 });

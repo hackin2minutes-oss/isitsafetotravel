@@ -1,0 +1,118 @@
+🪵  Writing logs to "/Users/sawan/Library/Preferences/.wrangler/logs/wrangler-2026-04-12_12-26-29_019.log"
+.env file not found at "/Users/sawan/Desktop/is it safe copy/.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+
+ ⛅️ wrangler 4.80.0 (update available 4.81.1)
+─────────────────────────────────────────────
+Metrics dispatcher: Posting data {"deviceId":"b8974a5a-f989-4e06-80b8-64227590d5da","event":"wrangler command started","timestamp":1775996789095,"properties":{"amplitude_session_id":1775996789093,"amplitude_event_id":0,"wranglerVersion":"4.80.0","wranglerMajorVersion":4,"wranglerMinorVersion":80,"wranglerPatchVersion":0,"osPlatform":"Mac OS","osVersion":"Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:40 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T8132","nodeVersion":25,"packageManager":"npm","isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":[],"argsCombination":"","sanitizedCommand":"pages deploy","sanitizedArgs":{}}}
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/cc550ad7cbc3497604af4e34ed34634e/pages/projects/isitsafetotravel
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API REQUEST
+-- START CF API RESPONSE: OK 200
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API RESPONSE
+pages deploy: Detecting git repository information...
+pages deploy: Git repository detected
+pages deploy: Working directory dirty status: true
+pages deploy: Using provided branch: "main"
+pages deploy: Detected commit hash: "155c60cdb9ba7136bece2cb999955e1dbc34fe5a"
+pages deploy: Detected commit message: "Add AI Trip Planner feature
+
+- New 'Plan Trip' tab..."
+pages deploy: Git information summary - branch: main, commitHash: 155c60cdb9ba7136bece2cb999955e1dbc34fe5a, commitDirty: true
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/cc550ad7cbc3497604af4e34ed34634e/pages/projects/isitsafetotravel
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API REQUEST
+-- START CF API RESPONSE: OK 200
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API RESPONSE
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/cc550ad7cbc3497604af4e34ed34634e/pages/projects/isitsafetotravel/upload-token
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API REQUEST
+-- START CF API RESPONSE: OK 200
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API RESPONSE
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/cc550ad7cbc3497604af4e34ed34634e/pages/projects/isitsafetotravel/upload-token
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API REQUEST
+-- START CF API RESPONSE: OK 200
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API RESPONSE
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/pages/assets/check-missing
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API REQUEST
+-- START CF API RESPONSE: OK 200
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API RESPONSE
+Uploading... (53/53)
+✨ Success! Uploaded 0 files (53 already uploaded) (0.21 sec)
+
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/pages/assets/upsert-hashes
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API REQUEST
+-- START CF API RESPONSE: OK 200
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+-- END CF API RESPONSE
+✨ Uploading _headers
+Attaching additional modules:
+┌─────────────────────────────────────────────────────────────────────┬──────┬────────────┐
+│ Name                                                                │ Type │ Size       │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/cache/adaptor.js                             │ esm  │ 2.29 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/cache/cache-api.js                           │ esm  │ 0.43 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/cache/kv.js                                  │ esm  │ 0.35 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/aqi.func.js                    │ esm  │ 17.73 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/aviation.func.js               │ esm  │ 19.08 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/chat.func.js                   │ esm  │ 20.04 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/disaster.func.js               │ esm  │ 17.78 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/intel.func.js                  │ esm  │ 18.29 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/location.func.js               │ esm  │ 18.50 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/news.func.js                   │ esm  │ 18.24 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/places.func.js                 │ esm  │ 22.49 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/security.func.js               │ esm  │ 18.25 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/trip-planner.func.js           │ esm  │ 22.10 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/weather.func.js                │ esm  │ 17.86 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/functions/api/wiki.func.js                   │ esm  │ 18.33 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js │ esm  │ 0.57 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ __next-on-pages-dist__/webpack/181561f38d647ca4c88e359fe6a760ca.js  │ esm  │ 222.65 KiB │
+├─────────────────────────────────────────────────────────────────────┼──────┼────────────┤
+│ Total (17 modules)                                                  │      │ 454.97 KiB │
+└─────────────────────────────────────────────────────────────────────┴──────┴────────────┘
+Metrics dispatcher: Posting data {"deviceId":"b8974a5a-f989-4e06-80b8-64227590d5da","event":"wrangler command errored","timestamp":1775996793599,"properties":{"amplitude_session_id":1775996789093,"amplitude_event_id":1,"wranglerVersion":"4.80.0","wranglerMajorVersion":4,"wranglerMinorVersion":80,"wranglerPatchVersion":0,"osPlatform":"Mac OS","osVersion":"Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:40 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T8132","nodeVersion":25,"packageManager":"npm","isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":[],"argsCombination":"","sanitizedCommand":"pages deploy","sanitizedArgs":{},"durationMs":4507,"errorType":"Error"}}
+
+Metrics dispatcher: Posting data {"deviceId":"b8974a5a-f989-4e06-80b8-64227590d5da","event":"wrangler command started","timestamp":1775996793636,"properties":{"amplitude_session_id":1775996789089,"amplitude_event_id":0,"wranglerVersion":"4.80.0","wranglerMajorVersion":4,"wranglerMinorVersion":80,"wranglerPatchVersion":0,"osPlatform":"Mac OS","osVersion":"Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:40 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T8132","nodeVersion":25,"packageManager":"npm","isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":[],"argsCombination":"","sanitizedCommand":"","sanitizedArgs":{}}}
+Metrics dispatcher: Posting data {"deviceId":"b8974a5a-f989-4e06-80b8-64227590d5da","event":"wrangler command errored","timestamp":1775996793637,"properties":{"amplitude_session_id":1775996789089,"amplitude_event_id":1,"wranglerVersion":"4.80.0","wranglerMajorVersion":4,"wranglerMinorVersion":80,"wranglerPatchVersion":0,"osPlatform":"Mac OS","osVersion":"Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:40 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T8132","nodeVersion":25,"packageManager":"npm","isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":null,"argsUsed":[],"argsCombination":"","sanitizedCommand":"","sanitizedArgs":{},"durationMs":4550,"errorType":"Error"}}
+

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'edge';
+
 const OVERPASS_QUERIES: Record<string, string> = {
   attractions: '[out:json][timeout:15];(node["tourism"~"attraction|museum|gallery|monument|viewpoint|zoo|theme_park|aquarium|information|artwork"](around:$RADIUS$,$LAT$,$LON$);way["tourism"~"attraction|museum|gallery|monument|viewpoint|zoo|theme_park|aquarium"](around:$RADIUS$,$LAT$,$LON$);node["historic"](around:$RADIUS$,$LAT$,$LON$);way["historic"](around:$RADIUS$,$LAT$,$LON$););out center $LIMIT$;',
   restaurants: '[out:json][timeout:15];(node["amenity"="restaurant"](around:$RADIUS$,$LAT$,$LON$);node["amenity"="cafe"](around:$RADIUS$,$LAT$,$LON$);way["amenity"="restaurant"](around:$RADIUS$,$LAT$,$LON$);way["amenity"="cafe"](around:$RADIUS$,$LAT$,$LON$););out center $LIMIT$;',

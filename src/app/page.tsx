@@ -24,6 +24,10 @@ import { ScoredCountry } from '@/scoring/types';
 import { getScoreRating } from '@/scoring/scoring';
 import { GPI_2025_COUNTRIES } from '@/data/gpi2025';
 
+// Mobile Module
+import { MobileAppShell } from '@/modules/mobile/MobileAppShell';
+import { MobileTab } from '@/modules/mobile/BottomTabBar';
+
 const MOCK_COUNTRIES = GPI_2025_COUNTRIES;
 
 type ViewMode = 'location' | 'compare' | 'comms' | 'planner';
@@ -290,9 +294,35 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col h-screen w-full overflow-hidden selection:bg-violet-500/30 bg-[#08090C] ${viewPreference !== 'auto' ? 'border-4 border-violet-500/20' : ''}`}>
-      <Header />
+      {!effectiveIsMobile && <Header />}
       
-      <main className={`flex-1 flex overflow-hidden relative ${effectiveIsMobile ? 'flex-col overflow-y-auto' : 'flex-row'}`}>
+      {effectiveIsMobile ? (
+        <MobileAppShell 
+          viewMode={viewMode}
+          setViewMode={(mode) => setViewMode(mode)}
+          renderMap={<SimpleMap selectedLocation={selectedLocation} />}
+          renderContent={(mode) => (
+            <div className="pt-6 animate-fade-in">
+              {mode === 'location' && (
+                <div className="space-y-6">
+                  <SearchPanel onLocationSelect={handleLocationSelect} />
+                  <SafetyCard location={selectedLocation} assessment={assessment} isLoading={isAnalyzing} retryCount={retryCount} error={error} />
+                </div>
+              )}
+              {mode === 'compare' && renderCompare()}
+              {mode === 'comms' && (
+                <div className="h-[70vh]">
+                   <IntelligenceAssistant location={selectedLocation} assessment={assessment} />
+                </div>
+              )}
+              {mode === 'planner' && (
+                 <TripPlanner />
+              )}
+            </div>
+          )}
+        />
+      ) : (
+      <main className="flex-1 flex overflow-hidden relative flex-row">
         {/* LEFT PANE - INFO & ADVISORIES */}
         <aside 
           className={`
@@ -366,6 +396,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      )}
 
 
 
